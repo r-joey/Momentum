@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Habit Tracker</title>
+    <title>Momentum</title>
     <!-- Tailwind CSS CDN for a clean, responsive design -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Inter font from Google Fonts -->
@@ -13,7 +13,8 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
+            background-color: #1a202c; /* Dark mode body background */
+            color: #e2e8f0; /* Light text color for dark mode */
         }
         .container {
             max-width: 90%;
@@ -32,7 +33,7 @@
             transition: background-color 0.2s ease;
         }
         .calendar-day:hover {
-            background-color: #d1d5db;
+            background-color: #4a5568; /* Darker hover for dark mode */
         }
         .calendar-day.checked {
             background-color: #10b981;
@@ -44,44 +45,44 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-gray-900 text-gray-100">
 
-    <div class="container bg-white shadow-xl rounded-2xl my-8">
+    <div class="container bg-gray-800 shadow-xl rounded-2xl my-8">
         
         <!-- Header -->
-        <header class="pb-6 border-b border-gray-200">
-            <h1 id="app-title" class="text-3xl font-bold text-center text-gray-900">Habit Tracker</h1>
+        <header class="pb-6 border-b border-gray-700">
+            <h1 id="app-title" class="text-3xl font-bold text-center text-gray-100">Momentum</h1>
         </header>
 
-        <!-- Main Habit List View -->
-        <main id="habit-list-view" class="pt-6">
+        <!-- Main Streak List View -->
+        <main id="streak-list-view" class="pt-6">
             <div class="flex flex-col md:flex-row gap-2">
-                <input type="text" id="habit-input" placeholder="Enter a new habit..."
-                       class="flex-grow p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                <button id="add-habit-btn"
+                <input type="text" id="streak-input" placeholder="Enter a new streak..."
+                       class="flex-grow p-3 rounded-lg border border-gray-600 bg-gray-700 text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <button id="add-streak-btn"
                         class="px-6 py-3 bg-emerald-600 text-white font-semibold rounded-lg shadow-md hover:bg-emerald-700 transition duration-200 ease-in-out">
-                    Add Habit
+                    Add Streak
                 </button>
             </div>
             
-            <ul id="habit-list" class="mt-6 space-y-4">
-                <!-- Habits will be rendered here -->
+            <ul id="streak-list" class="mt-6 space-y-4">
+                <!-- Streaks will be rendered here -->
             </ul>
         </main>
 
         <!-- Calendar View (initially hidden) -->
         <div id="calendar-view" class="hidden pt-6">
             <button id="back-to-list-btn"
-                    class="mb-6 px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-lg shadow-sm hover:bg-gray-300 transition duration-200 ease-in-out">
-                &larr; Back to Habits
+                    class="mb-6 px-4 py-2 bg-gray-700 text-gray-100 font-semibold rounded-lg shadow-sm hover:bg-gray-600 transition duration-200 ease-in-out">
+                &larr; Back
             </button>
             
             <div class="flex items-center justify-between mb-4">
                 <button id="prev-month-btn"
-                        class="p-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors">&lt;</button>
-                <h2 id="calendar-header" class="text-xl font-bold text-center text-gray-900">Month Year</h2>
+                        class="p-2 rounded-full bg-gray-700 text-gray-100 hover:bg-gray-600 transition-colors">&lt;</button>
+                <h2 id="calendar-header" class="text-xl font-bold text-center text-gray-100">Month Year</h2>
                 <button id="next-month-btn"
-                        class="p-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors">&gt;</button>
+                        class="p-2 rounded-full bg-gray-700 text-gray-100 hover:bg-gray-600 transition-colors">&gt;</button>
             </div>
 
             <!-- Calendar Grid -->
@@ -90,24 +91,24 @@
             </div>
             
             <!-- Weekly and Monthly Summary -->
-            <div class="mt-8 p-4 bg-gray-100 rounded-lg shadow-inner">
-                <div class="flex justify-between items-center text-gray-700 mb-2">
+            <div class="mt-8 p-4 bg-gray-700 rounded-lg shadow-inner">
+                <div class="flex justify-between items-center text-gray-200 mb-2">
                     <span class="font-semibold">Weekly Progress:</span>
                     <span id="weekly-progress" class="font-bold text-lg">0/7</span>
                 </div>
-                <div class="flex justify-between items-center text-gray-700">
+                <div class="flex justify-between items-center text-gray-200">
                     <span class="font-semibold">Monthly Progress:</span>
                     <span id="monthly-progress" class="font-bold text-lg">0/30</span>
                 </div>
             </div>
             
             <!-- New Streak Display -->
-            <div class="mt-4 p-4 bg-gray-100 rounded-lg shadow-inner">
-                <div class="flex justify-between items-center text-gray-700 mb-2">
+            <div class="mt-4 p-4 bg-gray-700 rounded-lg shadow-inner">
+                <div class="flex justify-between items-center text-gray-200 mb-2">
                     <span class="font-semibold">Current Streak:</span>
                     <span id="current-streak" class="font-bold text-lg">0 days</span>
                 </div>
-                <div class="flex justify-between items-center text-gray-700">
+                <div class="flex justify-between items-center text-gray-200">
                     <span class="font-semibold">Best Streak:</span>
                     <span id="best-streak" class="font-bold text-lg">0 days</span>
                 </div>
@@ -119,17 +120,17 @@
     <script>
         // Use a single object to manage the application state
         const appState = {
-            habits: {}, // Stores all habits
-            currentHabitId: null,
+            streaks: {}, // Stores all streaks
+            currentStreakId: null,
             currentDate: new Date(),
         };
 
         // DOM element references
-        const habitListView = document.getElementById('habit-list-view');
+        const streakListView = document.getElementById('streak-list-view');
         const calendarView = document.getElementById('calendar-view');
-        const habitInput = document.getElementById('habit-input');
-        const addHabitBtn = document.getElementById('add-habit-btn');
-        const habitList = document.getElementById('habit-list');
+        const streakInput = document.getElementById('streak-input');
+        const addStreakBtn = document.getElementById('add-streak-btn');
+        const streakList = document.getElementById('streak-list');
         const backToListBtn = document.getElementById('back-to-list-btn');
         const prevMonthBtn = document.getElementById('prev-month-btn');
         const nextMonthBtn = document.getElementById('next-month-btn');
@@ -159,26 +160,26 @@
         // --- Data Management (localStorage) ---
         
         /**
-         * Loads habits data from localStorage.
+         * Loads streaks data from localStorage.
          */
-        const loadHabits = () => {
-            const storedHabits = localStorage.getItem('habits');
-            if (storedHabits) {
-                appState.habits = JSON.parse(storedHabits);
+        const loadStreaks = () => {
+            const storedStreaks = localStorage.getItem('streaks');
+            if (storedStreaks) {
+                appState.streaks = JSON.parse(storedStreaks);
             }
         };
 
         /**
-         * Saves habits data to localStorage.
+         * Saves streaks data to localStorage.
          */
-        const saveHabits = () => {
-            localStorage.setItem('habits', JSON.stringify(appState.habits));
+        const saveStreaks = () => {
+            localStorage.setItem('streaks', JSON.stringify(appState.streaks));
         };
 
         // --- Calculation Functions ---
 
         /**
-         * Calculates the current and best streak for a habit.
+         * Calculates the current and best streak for an item.
          * @param {object} dates A map of dates to true/false.
          * @returns {{current: number, best: number}} An object containing the streak values.
          */
@@ -244,32 +245,32 @@
         // --- Rendering Functions ---
 
         /**
-         * Renders the list of habits on the main page.
+         * Renders the list of streaks on the main page.
          */
-        const renderHabits = () => {
-            habitList.innerHTML = '';
-            for (const id in appState.habits) {
-                const habit = appState.habits[id];
+        const renderStreaks = () => {
+            streakList.innerHTML = '';
+            for (const id in appState.streaks) {
+                const streak = appState.streaks[id];
                 // Calculate the current streak for the main view
-                const { current } = calculateStreaks(habit.dates);
+                const { current } = calculateStreaks(streak.dates);
                 const li = document.createElement('li');
-                li.className = 'flex items-center justify-between p-4 bg-gray-50 rounded-lg shadow-sm border border-gray-200 transition-transform hover:scale-[1.01]';
+                li.className = 'flex items-center justify-between p-4 bg-gray-700 rounded-lg shadow-sm border border-gray-600 transition-transform hover:scale-[1.01]';
                 li.innerHTML = `
-                    <button class="flex-grow flex flex-col md:flex-row md:items-center text-left text-lg font-semibold text-gray-800 focus:outline-none" data-id="${id}">
-                        <span class="mr-4">${habit.name}</span>
+                    <button class="flex-grow flex flex-col md:flex-row md:items-center text-left text-lg font-semibold text-gray-200 focus:outline-none" data-id="${id}">
+                        <span class="mr-4">${streak.name}</span>
                         <!-- New streak info for the main page -->
-                        <div class="flex items-center text-sm text-gray-500 font-normal mt-1 md:mt-0">
-                            <span class="mr-2">Current: <span class="font-bold text-gray-700">${current}</span></span>
-                            <span>Best: <span class="font-bold text-gray-700">${habit.bestStreak}</span></span>
+                        <div class="flex items-center text-sm text-gray-400 font-normal mt-1 md:mt-0">
+                            <span class="mr-2">Current: <span class="font-bold text-gray-200">${current}</span></span>
+                            <span>Best: 🔥 <span class="font-bold text-gray-200">${streak.bestStreak}</span></span>
                         </div>
                     </button>
-                    <button class="delete-btn text-red-500 hover:text-red-700 ml-4 p-2 rounded-full transition-colors" data-id="${id}">
+                    <button class="delete-btn text-red-500 hover:text-red-400 ml-4 p-2 rounded-full transition-colors" data-id="${id}">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
                         </svg>
                     </button>
                 `;
-                habitList.appendChild(li);
+                streakList.appendChild(li);
             }
         };
 
@@ -280,10 +281,10 @@
             const date = appState.currentDate;
             const year = date.getFullYear();
             const month = date.getMonth();
-            const habitId = appState.currentHabitId;
-            const habit = appState.habits[habitId];
+            const streakId = appState.currentStreakId;
+            const streak = appState.streaks[streakId];
 
-            if (!habit) return;
+            if (!streak) return;
 
             // Set the calendar header text
             calendarHeader.textContent = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(date);
@@ -296,7 +297,7 @@
             dayNames.forEach(day => {
                 const dayEl = document.createElement('div');
                 dayEl.textContent = day;
-                dayEl.className = 'font-bold text-gray-500';
+                dayEl.className = 'font-bold text-gray-400';
                 calendarGrid.appendChild(dayEl);
             });
 
@@ -326,7 +327,7 @@
             // Add days of the month
             for (let day = 1; day <= totalDays; day++) {
                 const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                const isChecked = habit.dates[dateString] === true;
+                const isChecked = streak.dates[dateString] === true;
                 
                 if (isChecked) {
                     monthlyCount++;
@@ -344,7 +345,7 @@
                 const dayEl = document.createElement('div');
                 dayEl.textContent = day;
                 dayEl.dataset.date = dateString;
-                dayEl.className = `calendar-day flex items-center justify-center rounded-lg ${isChecked ? 'checked' : 'bg-gray-100'}`;
+                dayEl.className = `calendar-day flex items-center justify-center rounded-lg ${isChecked ? 'checked' : 'bg-gray-700'}`;
 
                 // Disable future dates
                 if (isCurrentMonth && day > today.getDate()) {
@@ -361,80 +362,80 @@
             monthlyProgress.textContent = `${monthlyCount}/${totalDays}`;
 
             // Update streak trackers
-            const { current, best } = calculateStreaks(habit.dates);
+            const { current, best } = calculateStreaks(streak.dates);
             currentStreakDisplay.textContent = `${current} days`;
-            bestStreakDisplay.textContent = `${best} days`;
+            bestStreakDisplay.innerHTML = `🔥 <span class="font-bold text-lg">${best} days</span>`;
         };
 
         // --- Core Logic Functions ---
         
         /**
-         * Adds a new habit from the input field.
+         * Adds a new streak from the input field.
          */
-        const addHabit = () => {
-            const habitName = habitInput.value.trim();
-            if (habitName) {
-                const id = `habit-${Date.now()}`;
-                appState.habits[id] = { name: habitName, dates: {}, bestStreak: 0 };
-                habitInput.value = '';
-                saveHabits();
-                renderHabits();
+        const addStreak = () => {
+            const streakName = streakInput.value.trim();
+            if (streakName) {
+                const id = `streak-${Date.now()}`;
+                appState.streaks[id] = { name: streakName, dates: {}, bestStreak: 0 };
+                streakInput.value = '';
+                saveStreaks();
+                renderStreaks();
             }
         };
 
         /**
-         * Removes a habit by its ID.
-         * @param {string} id The ID of the habit to remove.
+         * Removes a streak by its ID.
+         * @param {string} id The ID of the streak to remove.
          */
-        const removeHabit = (id) => {
-            delete appState.habits[id];
-            saveHabits();
-            renderHabits();
+        const removeStreak = (id) => {
+            delete appState.streaks[id];
+            saveStreaks();
+            renderStreaks();
         };
 
         /**
-         * Toggles the checked status of a date for the current habit.
+         * Toggles the checked status of a date for the current streak.
          * @param {string} dateString The date in 'YYYY-MM-DD' format.
          */
         const toggleDate = (dateString) => {
-            const habit = appState.habits[appState.currentHabitId];
+            const streak = appState.streaks[appState.currentStreakId];
             
-            if (habit.dates[dateString]) {
-                delete habit.dates[dateString];
+            if (streak.dates[dateString]) {
+                delete streak.dates[dateString];
             } else {
-                habit.dates[dateString] = true;
+                streak.dates[dateString] = true;
             }
 
             // Recalculate streaks and update best streak if necessary
-            const { best } = calculateStreaks(habit.dates);
-            if (best > habit.bestStreak) {
-                habit.bestStreak = best;
+            const { best } = calculateStreaks(streak.dates);
+            if (best > streak.bestStreak) {
+                streak.bestStreak = best;
             }
 
-            saveHabits();
+            saveStreaks();
             renderCalendar();
         };
 
         /**
-         * Switches the view to the calendar for a specific habit.
-         * @param {string} id The ID of the habit to display.
+         * Switches the view to the calendar for a specific streak.
+         * @param {string} id The ID of the streak to display.
          */
         const showCalendarView = (id) => {
-            appState.currentHabitId = id;
+            appState.currentStreakId = id;
             appState.currentDate = new Date(); // Reset to current month
-            habitListView.classList.add('hidden');
+            streakListView.classList.add('hidden');
             calendarView.classList.remove('hidden');
             renderCalendar();
         };
 
         /**
-         * Switches the view back to the main habit list.
+         * Switches the view back to the main streak list.
          */
-        const showHabitListView = () => {
-            appState.currentHabitId = null;
+        const showStreakListView = () => {
+            appState.currentStreakId = null;
             calendarView.classList.add('hidden');
-            habitListView.classList.remove('hidden');
-            renderHabits();
+            streakListView.classList.remove('hidden');
+            renderStreaks();
         };
 
         // --- Event Listeners ---
@@ -443,25 +444,25 @@
          * Sets up all the event listeners for the application.
          */
         const setupEventListeners = () => {
-            addHabitBtn.addEventListener('click', addHabit);
-            habitInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') addHabit();
+            addStreakBtn.addEventListener('click', addStreak);
+            streakInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') addStreak();
             });
 
-            // Event delegation for habit and delete buttons on the list
-            habitList.addEventListener('click', (e) => {
+            // Event delegation for streak and delete buttons on the list
+            streakList.addEventListener('click', (e) => {
                 const target = e.target;
-                const habitButton = target.closest('button:not(.delete-btn)');
+                const streakButton = target.closest('button:not(.delete-btn)');
                 const deleteButton = target.closest('.delete-btn');
 
-                if (habitButton) {
-                    showCalendarView(habitButton.dataset.id);
+                if (streakButton) {
+                    showCalendarView(streakButton.dataset.id);
                 } else if (deleteButton) {
-                    removeHabit(deleteButton.dataset.id);
+                    removeStreak(deleteButton.dataset.id);
                 }
             });
 
-            backToListBtn.addEventListener('click', showHabitListView);
+            backToListBtn.addEventListener('click', showStreakListView);
             prevMonthBtn.addEventListener('click', () => {
                 appState.currentDate.setMonth(appState.currentDate.getMonth() - 1);
                 renderCalendar();
@@ -478,8 +479,8 @@
          * Initializes the application on page load.
          */
         const init = () => {
-            loadHabits();
-            renderHabits();
+            loadStreaks();
+            renderStreaks();
             setupEventListeners();
         };
 
